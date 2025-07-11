@@ -2,7 +2,36 @@
 API RESTful para la gestión de un sistema de reservas de restaurante, clientes y administración, desarrollada en PHP + MySQL, con autenticación JWT.
 
 📂 Estructura del Proyecto
-api/ │ ├── auth/ │ ├── login.php # Autenticación de usuario │ ├── register.php # Registro de usuario │ ├── logout.php # Cierre de sesión (invalida el token) │ └── user.php # Devuelve datos del usuario autenticado │ ├── mesas/ │ ├── read.php # Lista todas las mesas │ ├── reservas/ │ ├── read.php # Lista reservas (por usuario/admin) │ ├── create.php # Crea una nueva reserva │ ├── testimonios/ │ ├── read.php # Obtiene testimonios │ ├── create.php # Crea un testimonio │ ├── cupones/ │ ├── validar.php # Valida cupones (opcional) │ ├── config/ │ ├── database.php # Configuración y conexión MySQL │ ├── jwt_helper.php # Utilidades para manejo de JWT │ ├── .env # Variables de entorno (NO subir a producción) ├── .htaccess # CORS / Seguridad └── ...
+api/
+│
+├── auth/
+│ ├── login.php # Autenticación de usuario
+│ ├── register.php # Registro de usuario
+│ ├── logout.php # Cierre de sesión (invalida el token)
+│ └── user.php # Devuelve datos del usuario autenticado
+│
+├── mesas/
+│ ├── read.php # Lista todas las mesas
+│
+├── reservas/
+│ ├── read.php # Lista reservas (por usuario/admin)
+│ ├── create.php # Crea una nueva reserva
+│
+├── testimonios/
+│ ├── read.php # Obtiene testimonios
+│ ├── create.php # Crea un testimonio
+│
+├── cupones/
+│ ├── validar.php # Valida cupones (opcional)
+│
+├── config/
+│ ├── database.php # Configuración y conexión MySQL
+│ ├── jwt_helper.php # Utilidades para manejo de JWT
+│
+├── .env # Variables de entorno (NO subir a producción)
+├── .htaccess # CORS / Seguridad
+└── ...
+
 
 🚀 Endpoints principales
 🔐 Autenticación
