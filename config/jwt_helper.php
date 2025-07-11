@@ -1,18 +1,26 @@
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Dotenv\Dotenv; // ¡Necesario!
 
-// Cargar .env una vez
-if (!getenv('JWT_SECRET')) {
+
+if (!getenv('JWT_SECRET') && empty($_ENV['JWT_SECRET'])) {
     if (file_exists(__DIR__ . '/../.env')) {
-        require_once __DIR__ . '/../vendor/autoload.php';
-        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
         $dotenv->load();
     }
 }
 
-$jwtSecret = getenv('JWT_SECRET');
+$jwtSecret = getenv('JWT_SECRET') ?: ($_ENV['JWT_SECRET'] ?? null);
+
+
+if (!$jwtSecret) {
+    die(json_encode([
+        "message" => "No se encontró JWT_SECRET en .env o variables de entorno"
+    ]));
+}
 
 function jwt_encode($data)
 {

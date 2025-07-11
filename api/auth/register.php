@@ -1,26 +1,34 @@
 <?php
-
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Origin: http://localhost:3000");
 
+
+// Preflight CORS
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
 include_once '../../config/database.php';
-require_once '../../config/jwt_helper.php';
 
+// Recibe datos del POST
 $data = json_decode(file_get_contents("php://input"));
 
-if (!isset($data->nombre, $data->email, $data->password)) {
+if (
+    !isset($data->nombre) ||
+    !isset($data->email) ||
+    !isset($data->password)
+) {
     http_response_code(400);
-    echo json_encode(["message" => "Faltan datos"]);
+    echo json_encode(["message" => "Faltan datos obligatorios"]);
     exit;
 }
 
 $db = (new Database())->getConnection();
 
-// Verificar si ya existe
-$stmt = $db->prepare("SELECT id FROM usuarios WHERE email = ?");
+// Revisar si el email ya existe
+$stmt = $db->prepare("SELECT id FROM clientes WHERE email = ?");
 $stmt->execute([$data->email]);
 if ($stmt->fetch()) {
     http_response_code(409);
@@ -28,29 +36,27 @@ if ($stmt->fetch()) {
     exit;
 }
 
-// Registrar usuario
+// Insertar el cliente
 $passwordHash = password_hash($data->password, PASSWORD_BCRYPT);
-$role = $data->role ?? 'client'; // Por defecto cliente
+$telefono = isset($data->telefono) ? $data->telefono : null;
 
-$stmt = $db->prepare("INSERT INTO usuarios (nombre, email, password, role) VALUES (?, ?, ?, ?)");
-$stmt->execute([$data->nombre, $data->email, $passwordHash, $role]);
-$user_id = $db->lastInsertId();
+$stmt = $db->prepare("INSERT INTO clientes (nombre, email, telefono, password, creado_en) VALUES (?, ?, ?, ?, NOW())");
+$stmt->execute([
+    $data->nombre,
+    $data->email,
+    $telefono,
+    $passwordHash
+]);
 
-$payload = [
-    "id" => $user_id,
-    "email" => $data->email,
-    "role" => $role,
-    "nombre" => $data->nombre
-];
-$token = jwt_encode($payload);
+$cliente_id = $db->lastInsertId();
 
+http_response_code(201);
 echo json_encode([
-    "access_token" => $token,
-    "user" => [
-        "id" => $user_id,
+    "cliente" => [
+        "id" => $cliente_id,
+        "nombre" => $data->nombre,
         "email" => $data->email,
-        "role" => $role,
-        "nombre" => $data->nombre
+        "telefono" => $telefono
     ]
 ]);
-http_response_code(201); // Creado
+exit;

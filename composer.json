@@ -1,0 +1,18 @@
+{
+    "name": "davidcaro/restaurante",
+    "autoload": {
+        "psr-4": {
+            "Davidcaro\\Restaurante\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "David Caro",
+            "email": "103767506+davidcaroo@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "firebase/php-jwt": "^6.11",
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

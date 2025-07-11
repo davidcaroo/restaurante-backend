@@ -1,4 +1,9 @@
-# archivo: /xampp/htdocs/restaurante/api/.htaccess
+# archivo: /xampp/htdocs/restaurante/.htaccess
+
+RewriteEngine On
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "GET,POST,OPTIONS,PUT,DELETE"
